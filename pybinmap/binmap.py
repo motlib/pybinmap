@@ -23,6 +23,10 @@ class DataItem():
         :param data: bytes object containing the data to be interpreted.
 
         '''
+
+        endbyte = self.end // 8
+        if len(data) < endbyte + 1:
+            raise ValueError("Data too short in data item '{0}'.".format(self.name))
         
         self._data = data
         self._raw_value = self.extract_raw_value()
