@@ -5,10 +5,13 @@ class DataItem():
     '''Base class for binary data extraction. Needs to be subclassed to interpret
     data.'''
     
-    def __init__(self, name, start, length, **kwargs):
-        self._name = name
-        self._start = start
-        self._length = length
+    def __init__(self, **kwargs):
+        self._args = kwargs
+        
+        # todo check for required args
+        self._name = kwargs['name']
+        self._start = kwargs['start']
+        self._length = kwargs['length']
         
         self._raw_value = None
         self._value = None
@@ -93,6 +96,7 @@ class DataItem():
         '''
         
         return self.start + self.length - 1
+
     
     @property
     def length(self):
@@ -100,6 +104,7 @@ class DataItem():
         
         return self._length
 
+    
     @property
     def raw_value(self):
         '''The raw value of this data item. This is a bytes() object containing the data
@@ -120,6 +125,13 @@ class DataItem():
         return self._value
 
 
+    @property
+    def spec(self):
+        '''The arguments used to create this data item.'''
+        
+        return self._args
+
+    
     def _fmt_addr(self, abs_bit):
         '''Format a bit address as byte / bit address string.'''
         
@@ -151,19 +163,21 @@ class RawDataItem(DataItem):
     
     
 class CharDataItem(DataItem):
-    def __init__(self, encoding='ascii', **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._encoding = encoding
+        self._encoding = kwargs.get('encoding', 'ascii')
         
     def calc_value(self):
         return self._raw_value.decode('ascii')
 
 
 class UIntDataItem(DataItem):
-    def __init__(self, endian='little', **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        endian = kwargs.get('endian', 'little')
+        
         if endian not in ('little', 'big'):
             msg = "Must use either 'big' or 'little' endian. Got '{0}'."
             raise ValueError(msg.format(endian))
@@ -223,17 +237,36 @@ class BinMap():
         self._unmapped_counter = 0
 
         
-    def add(self, dt, **kwargs):
+    def add(self, **kwargs):
         '''Add a new data item definition to this binary map.'''
-        spec = self._type_tbl[dt]
+
+        if 'dt' not in kwargs:
+            raise ValueError("Must specify the data type with 'dt' parameter.")
+        
+        spec = self._type_tbl[kwargs['dt']]
 
         kwargs.update(spec)
+        
+        # we do not pass on the class
+        del kwargs['cls']
+        
         cls = spec['cls']
         bd = cls(**kwargs)
 
         self._add_bd(bd)
+
         
+    def add_from_spec(self, spec):
+        '''Use a list of dict structure to specify data items to add.'''
         
+        for item in spec:
+            self.add(**spec)
+
+            
+    def get_spec(self):
+        return [item.spec for item in self._map_list]
+
+    
     def _add_bd(self, bd):
         '''Add a DataItem instance.'''
         

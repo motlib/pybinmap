@@ -34,7 +34,7 @@ def test_binmap_predef_params():
 def test_binmap_missing_param():
     bm = BinMap()
 
-    with pytest.raises(TypeError):
+    with pytest.raises(KeyError):
         bm.add(dt='bool1', name='b1')
 
         
@@ -67,6 +67,8 @@ testspec_all_datatypes = [
 
 @pytest.mark.parametrize('params,result', testspec_all_datatypes)    
 def test_all_datatypes(params, result):
+    '''Run through all available data types and use them at least once.'''
+    
     bm = BinMap()
 
     params['name'] = 'testval'
@@ -78,6 +80,8 @@ def test_all_datatypes(params, result):
 
 
 def test_fill_unmapped():
+    '''Test function to add raw data items for all unmapped areas.'''
+    
     bm = BinMap()
     
     bm.add(dt='bool', name='enabled', start=1, length=1)
@@ -98,4 +102,11 @@ def test_fill_unmapped():
     assert um1.end == 7
     assert um1.length == 6
 
-    
+    um2 = bm.get_item('unmapped_002')
+    assert um2.start == 16
+    assert um2.end == 31
+    assert um2.length == 16
+
+    print(bm)
+
+    print(bm.get_spec())
