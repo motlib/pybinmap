@@ -43,7 +43,7 @@ def test_binmap_str():
     
     bm.add(dt='bool', name='enabled', start=1, length=1)
     bm.add(dt='uint', name='testval', start=8, length=8)
-    bm.add(dt='ascii', name='answer', start=8*3, length=8*2)
+    bm.add(dt='ascii', name='answer', start=8*4, length=8*2)
 
     bm.set_data(testdata)
     

@@ -28,7 +28,7 @@ Then you can do the following:
 bm = BinMap()
 bm.add(dt='bool', name='enabled', start=2, length=1)
 bm.add(dt='uint', name='testval', start=8, length=4)
-bm.add(dt='ascii', name=answer', start=4*8, length=2*8)
+bm.add(dt='ascii', name='answer', start=4*8, length=2*8)
 
 print(str(bm))
 ```
@@ -38,10 +38,12 @@ The result looks like this:
 ```text
 0000:1+1 enabled = True [raw: 0x01]
 0001:0+8 testval = 52 [raw: 0x34]
-0003:0+16 answer = x4 [raw: 0x78 0x34]
+0004:0+16 answer = 42 [raw: 0x34 0x32]
 ```
 
-Or you can retrieve single values or a dictionary with all values:
+Note: Addresses are written as `byte_pos:bit_pos+bit_length`. 
+
+You can also retrieve single values or a dictionary with all values:
 
 ```python
 answer = bm.get_value('answer')
