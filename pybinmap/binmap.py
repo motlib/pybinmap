@@ -220,6 +220,8 @@ class BinMap():
             'bool8': {'cls': BoolDataItem, 'length': 8},
         }
 
+        self._unmapped_counter = 0
+
         
     def add(self, dt, **kwargs):
         '''Add a new data item definition to this binary map.'''
@@ -269,7 +271,33 @@ class BinMap():
 
         return self._map_dict[name].value
 
+    def get_item(self, name):
 
+        return self._map_dict[name]
+    
+
+    def _add_unmapped(self, start, end):
+        
+        self.add(
+            dt='raw',
+            name='unmapped_{:03}'.format(self._unmapped_counter),
+            start=start,
+            length=(end - start + 1))
+
+        self._unmapped_counter += 1
+                
+
+    def fill_unmapped(self):
+        '''Fills all unmapped areas up to the last mapped data item with raw mappings.'''
+
+        if self._map_list[0].start > 0:
+            self._add_unmapped(0, self._map_list[0].start - 1)
+
+        for (di1,di2) in zip(self._map_list[:-1], self._map_list[1:]):
+            if di1.end + 1 < di2.start:
+                self._add_unmapped(di1.end + 1, di2.start - 1)
+
+                
     def __str__(self):
         '''Convert the whole binmap to string, i.e. print the information from all
         contained data items.'''

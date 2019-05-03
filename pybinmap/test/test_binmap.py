@@ -49,6 +49,7 @@ def test_binmap_str():
     
     print(bm)
 
+    
 testspec_all_datatypes = [
     ({'dt':'raw', 'start':0, 'length':8}, bytes([0x12])),
     ({'dt':'uint', 'start':0, 'length':8}, 0x12),
@@ -64,8 +65,6 @@ testspec_all_datatypes = [
     ({'dt':'bool8', 'start':0}, True),
 ]
 
-
-
 @pytest.mark.parametrize('params,result', testspec_all_datatypes)    
 def test_all_datatypes(params, result):
     bm = BinMap()
@@ -76,3 +75,27 @@ def test_all_datatypes(params, result):
     bm.set_data(testdata)
 
     assert bm.get_value('testval') == result
+
+
+def test_fill_unmapped():
+    bm = BinMap()
+    
+    bm.add(dt='bool', name='enabled', start=1, length=1)
+    bm.add(dt='uint', name='testval', start=8, length=8)
+    bm.add(dt='ascii', name='answer', start=8*4, length=8*2)
+
+    bm.fill_unmapped()
+    
+    bm.set_data(testdata)
+
+    um0 = bm.get_item('unmapped_000')
+    assert um0.start == 0
+    assert um0.end == 0
+    assert um0.length == 1
+
+    um1 = bm.get_item('unmapped_001')
+    assert um1.start == 2
+    assert um1.end == 7
+    assert um1.length == 6
+
+    
