@@ -50,3 +50,10 @@ answer = bm.get_value('answer')
 idata = bm.get_dict()
 ```
 
+## Development
+
+Development takes place here: https://github.com/motlib/pybinmap
+
+Feel free to create issues if you find bugs or have suggestions for
+improvement. Pull requests are also fine :-)
+
