@@ -3,7 +3,7 @@ fields.'''
 
 from collections import OrderedDict
 
-from .dataitems import RawDataItem, UIntDataItem, CharDataItem, BoolDataItem
+from .dataitems import DataItem, UIntDataItem, CharDataItem, BoolDataItem
 
 class BinMap():
     '''The BinMap organized a set of data items to interpret unstructured binary
@@ -18,7 +18,7 @@ class BinMap():
         self._data = None
 
         self._type_tbl = {
-            'raw': {'cls': RawDataItem},
+            'raw': {'cls': DataItem},
             'uint': {'cls': UIntDataItem},
             'uint8': {'cls': UIntDataItem, 'length': 8},
             'uint16': {'cls': UIntDataItem, 'length': 16},

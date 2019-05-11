@@ -1,9 +1,21 @@
-from collections import OrderedDict
+'''Implementation of DataItem class and subclasses to convert binary data to a
+meaningful representation.'''
+
+def format_addr(addr):
+    '''Format a bit address as byte / bit address string.'''
+
+    byte, bit = divmod(addr, 8)
+
+    return '{byte:04x}:{bit}'.format(
+        byte=byte,
+        bit=bit)
 
 
 class DataItem():
-    '''Base class for binary data extraction. Needs to be subclassed to interpret
-    data.'''
+    '''Base class for binary data extraction. This one just extracts a raw byte
+    array. Needs to be subclassed to interpret data.
+
+    '''
 
     def __init__(self, **kwargs):
         self._args = kwargs
@@ -43,12 +55,12 @@ class DataItem():
         :returns: 0 or 1.
         '''
 
-        (byte, bit) = divmod(abs_bit, 8)
+        (byte_pos, bit_pos) = divmod(abs_bit, 8)
 
         # extract one bit (0 or 1) from input data
-        b = (self._data[byte] & (1 << bit)) >> bit
+        bit_val = (self._data[byte_pos] & (1 << bit_pos)) >> bit_pos
 
-        return b
+        return bit_val
 
 
     def extract_raw_value(self):
@@ -56,26 +68,33 @@ class DataItem():
         structure.'''
 
         bytelist = []
-        bc = 0
-        d = 0
+        bit_count = 0
+        byte_val = 0
 
         # end + 1, because for range, the top value is not reached
-        for abs_bit in range(self.start, self.end + 1):
-            b = self.get_bit(abs_bit)
+        for addr in range(self.start, self.end + 1):
+            bit_val = self.get_bit(addr)
 
             # shift it to the correct output position
-            d += b << (bc % 8)
+            byte_val += bit_val << (bit_count % 8)
 
-            bc += 1
-            if bc == 8:
-                bytelist.append(d)
-                d = 0
-                bc = 0
+            bit_count += 1
+            if bit_count == 8:
+                bytelist.append(byte_val)
+                byte_val = 0
+                bit_count = 0
 
-        if bc != 0:
-            bytelist.append(d)
+        if bit_count != 0:
+            bytelist.append(byte_val)
 
         return bytes(bytelist)
+
+
+    def calc_value(self):
+        '''Implementation in base class returns the raw byte array for this
+        item. Subclasses have to override it to extract meaningful data.'''
+
+        return self._raw_value
 
 
     @property
@@ -112,7 +131,7 @@ class DataItem():
         '''The raw value of this data item. This is a bytes() object containing the data
         belonging to this data item.'''
 
-        if self._data == None:
+        if self._data is None:
             raise ValueError('No data set.')
 
         return self._raw_value
@@ -122,7 +141,7 @@ class DataItem():
     def value(self):
         '''The interpreted value of this data item.'''
 
-        if self._data == None:
+        if self._data is None:
             raise ValueError('No data set.')
 
         return self._value
@@ -135,47 +154,38 @@ class DataItem():
         return self._args
 
 
-    def _fmt_addr(self, abs_bit):
-        '''Format a bit address as byte / bit address string.'''
-
-        byte, bit = divmod(abs_bit, 8)
-
-        return '{byte:04x}:{bit}'.format(
-            byte=byte,
-            bit=bit)
 
 
     def __str__(self):
         '''Convert the data item to string.'''
 
-        rs = ' '.join('0x{0:02x}'.format(v) for v in self.raw_value)
+        raw_str = ' '.join('0x{0:02x}'.format(v) for v in self.raw_value)
 
         return '{addr}+{length} {name} = {value} [raw: {r}]'.format(
-            addr=self._fmt_addr(self.start),
+            addr=format_addr(self.start),
             name=self._name,
-            s=self._start,
             length=self._length,
             value=self.value,
-            r=rs)
+            r=raw_str)
 
-
-class RawDataItem(DataItem):
-
-    def calc_value(self):
-        return self._raw_value
 
 
 class CharDataItem(DataItem):
+    '''DataItem subclass for string interpretation.'''
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self._encoding = kwargs.get('encoding', 'ascii')
+
 
     def calc_value(self):
         return self._raw_value.decode('ascii')
 
 
 class UIntDataItem(DataItem):
+    '''DataItem subclass for unsigned integer interpretation.'''
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -191,24 +201,24 @@ class UIntDataItem(DataItem):
 
     def calc_value(self):
         if self._endian == 'big':
-            d = reversed(self._raw_value)
+            raw_val = reversed(self._raw_value)
         else:
-            d = self._raw_value
+            raw_val = self._raw_value
 
-        r = 0
-        for p, b in enumerate(d):
-            r += (1 << (8 * p)) * b
+        val = 0
+        for byte_pos, byte_val in enumerate(raw_val):
+            val += (1 << (8 * byte_pos)) * byte_val
 
-        return r
+        return val
 
 
 class BoolDataItem(UIntDataItem):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
+    '''DataItem subclass for bool value interpretation. This first converts the
+    underlying value to an unstigned integer. Any value not equal zero is
+    interpreted as True, zero is interpreted as false.'''
 
     def calc_value(self):
-        v = super().calc_value()
+        val = super().calc_value()
 
         # Convert the integer value to bool (0: False, everything else: True)
-        return bool(v)
+        return bool(val)
