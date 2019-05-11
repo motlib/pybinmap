@@ -1,6 +1,9 @@
+'''Implementation of the BinMap class for mapping binary data to meaningful
+fields.'''
+
 from collections import OrderedDict
 
-from .dataitems import *
+from .dataitems import RawDataItem, UIntDataItem, CharDataItem, BoolDataItem
 
 class BinMap():
     '''The BinMap organized a set of data items to interpret unstructured binary
@@ -45,30 +48,36 @@ class BinMap():
         del kwargs['cls']
 
         cls = spec['cls']
-        bd = cls(**kwargs)
+        item = cls(**kwargs)
 
-        self._add_bd(bd)
+        self._add_item(item)
 
 
     def add_from_spec(self, spec):
         '''Use a list of dict structure to specify data items to add.'''
 
         for item in spec:
-            self.add(**spec)
+            self.add(**item)
 
 
     def get_spec(self):
+        '''Generate a dict / list based structure containing the specification of this
+        BinMap. This can be used for saving to json or yaml and later restore it with
+        the add_from_spec() method.'''
+
         return [item.spec for item in self._map_list]
 
 
-    def _add_bd(self, bd):
+    def _add_item(self, item):
         '''Add a DataItem instance.'''
 
-        self._map_dict[bd.name] = bd
-        self._map_list.append(bd)
+        self._map_dict[item.name] = item
+        self._map_list.append(item)
+
+        # TODO: Check for overlapping
 
         # keep the list sorted by start address
-        self._map_list.sort(key=lambda bd: bd.start)
+        self._map_list.sort(key=lambda item: item.start)
 
 
     def set_data(self, data):
@@ -76,8 +85,8 @@ class BinMap():
 
         :param data: A bytes() object containing the data to be interpreted.'''
 
-        for bd in self._map_list:
-            bd.set_data(data)
+        for item in self._map_list:
+            item.set_data(data)
 
 
     def get_value_dict(self):
@@ -87,8 +96,8 @@ class BinMap():
         '''
 
         odict = OrderedDict()
-        for bd in self._map_list:
-            odict[bd.get_name()] = bd.get_value()
+        for item in self._map_list:
+            odict[item.get_name()] = item.get_value()
 
         return odict
 
@@ -137,7 +146,7 @@ class BinMap():
         if self._map_list[0].start > 0:
             self._add_unmapped(0, self._map_list[0].start - 1)
 
-        for (di1,di2) in zip(self._map_list[:-1], self._map_list[1:]):
+        for (di1, di2) in zip(self._map_list[:-1], self._map_list[1:]):
             if di1.end + 1 < di2.start:
                 self._add_unmapped(di1.end + 1, di2.start - 1)
 
