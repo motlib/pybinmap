@@ -46,7 +46,13 @@ Note: In the output, addresses are written as `byte_pos:bit_pos+bit_length`.
 You can also retrieve single values or a dictionary with all values:
 
 ```python
+# value access by name
 answer = bm.get_value('answer')
+
+# index-based value access
+answer = bm['answer']
+
+# or get the whole dictionary of values
 idata = bm.get_dict()
 ```
 
