@@ -304,8 +304,14 @@ class BinMap():
 
         return self._map_dict[name].value
 
-    def get_item(self, name):
 
+    def __getitem__(self, key):
+        '''Index based access to values.'''
+        
+        return self._map_dict[key].value
+    
+    
+    def get_item(self, name):
         return self._map_dict[name]
     
 

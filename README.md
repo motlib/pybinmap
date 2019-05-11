@@ -41,7 +41,7 @@ The result looks like this:
 0004:0+16 answer = 42 [raw: 0x34 0x32]
 ```
 
-Note: Addresses are written as `byte_pos:bit_pos+bit_length`. 
+Note: In the output, addresses are written as `byte_pos:bit_pos+bit_length`.
 
 You can also retrieve single values or a dictionary with all values:
 
