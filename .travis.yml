@@ -14,4 +14,6 @@ install:
 # command to run tests
 script:
   - "pytest --verbose"
-  - "pylint pybinmap"
+  # this should exit with 1 only for fatal and error findings. Otherwise exit
+  # code is 0 and the build is regarded successful.
+  - "pylint pybinmap; exit $(($? & 3))"
