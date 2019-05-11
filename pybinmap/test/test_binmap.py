@@ -66,7 +66,12 @@ def test_all_datatypes(params, result):
     bm.add(**params)
     bm.set_data(testdata)
 
-    assert bm.get_value('testval') == result
+    tv = bm.get_item('testval')
+
+    # check for expected value
+    assert tv.value == result
+    # ensure that length calculation always works
+    assert tv.length == tv.end - tv.start + 1
 
 
 def test_fill_unmapped():
@@ -93,6 +98,17 @@ def test_fill_unmapped():
     assert um2.length == 16
 
 
+def test_fill_unmapped_with_end_address():
+    '''Check if filling up to end address works.'''
+    
+    bm = _get_default_binmap()
+    bm.fill_unmapped(end_addr=800)
+
+    um3 = bm.get_item('unmapped_003')
+    assert um3.start == 48
+    assert um3.end == 800
+
+    
 def test_dict_access():
     '''Test successful dict based access to binmap information.'''
 
