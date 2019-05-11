@@ -1,0 +1,17 @@
+#setup
+language: python
+dist: xenial
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
+  # command to install dependencies
+install:
+  - "pip install pipenv"
+  - "pipenv sync --dev"
+  
+# command to run tests
+script:
+  - "pytest --verbose"
+  - "pylint pybinmap"
