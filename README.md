@@ -1,4 +1,4 @@
-# PyBinMap
+# PyBinMap [![Build Status](https://travis-ci.org/motlib/pybinmap.svg?branch=master)](https://travis-ci.org/motlib/pybinmap)[![Build Status](https://travis-ci.org/motlib/pybinmap.svg?branch=master)](https://travis-ci.org/motlib/pybinmap)
 
 `pybinmap` is a library to help interpreting binary data. This is e.g. useful
 when reverse engineering a data structure or when receiving any kind of
