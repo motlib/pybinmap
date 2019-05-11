@@ -3,9 +3,9 @@
 from distutils.core import setup
 
 setup(
-    name='Distutils',
+    name='pybinmap',
     version='0.0-dev1',
-    description='PyBinMap interprets binary data',
+    description='PyBinMap helps to interpret binary data blobs.',
     author='Andreas Schroeder',
     author_email='andreas@a-netz.de',
     url='https://github.com/motlib/pybinmap',
