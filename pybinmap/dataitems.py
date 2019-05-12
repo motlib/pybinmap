@@ -153,9 +153,7 @@ class DataItem():
 
         return self._args
 
-
-
-
+    
     def __str__(self):
         '''Convert the data item to string.'''
 
@@ -167,7 +165,6 @@ class DataItem():
             length=self._length,
             value=self.value,
             r=raw_str)
-
 
 
 class CharDataItem(DataItem):
