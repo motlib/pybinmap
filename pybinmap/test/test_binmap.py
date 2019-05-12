@@ -47,18 +47,18 @@ def test_binmap_str():
 
 
 TESTSPEC_ALL_DATATYPES = [
-    ({'dt':'raw', 'start':0, 'length':8}, bytes([0x12])),
-    ({'dt':'uint', 'start':0, 'length':8}, 0x12),
-    ({'dt':'uint8', 'start':0}, 0x12),
-    ({'dt':'uint16', 'start':0}, 0x3412),
-    ({'dt':'uint16', 'start':0, 'endian': 'big'}, 0x1234),
-    ({'dt':'uint32', 'start':0}, 0x78563412),
-    ({'dt':'uint64', 'start':0}, 0x3030323478563412),
-    ({'dt':'ascii', 'start':4*8, 'length':16}, '42'),
-    ({'dt':'utf8', 'start':4*8, 'length':16}, '42'),
-    ({'dt':'bool', 'start':0, 'length':1}, False),
-    ({'dt':'bool1', 'start':1}, True),
-    ({'dt':'bool8', 'start':0}, True),
+    pytest.param({'dt':'raw', 'start':0, 'length':8}, bytes([0x12]), id='raw'),
+    pytest.param({'dt':'uint', 'start':0, 'length':8}, 0x12, id='uint'),
+    pytest.param({'dt':'uint8', 'start':0}, 0x12, id='uint8'),
+    pytest.param({'dt':'uint16', 'start':0}, 0x3412, id='uint16'),
+    pytest.param({'dt':'uint16', 'start':0, 'endian': 'big'}, 0x1234, id='uint16endian'),
+    pytest.param({'dt':'uint32', 'start':0}, 0x78563412, id='uint32'),
+    pytest.param({'dt':'uint64', 'start':0}, 0x3030323478563412, id='uint64'),
+    pytest.param({'dt':'ascii', 'start':4*8, 'length':16}, '42', id='ascii'),
+    pytest.param({'dt':'utf8', 'start':4*8, 'length':16}, '42', id='utf8'),
+    pytest.param({'dt':'bool', 'start':0, 'length':1}, False, id='bool'),
+    pytest.param({'dt':'bool1', 'start':1}, True, id='bool1'),
+    pytest.param({'dt':'bool8', 'start':0}, True, id='bool8'),
 ]
 
 @pytest.mark.parametrize('params,result', TESTSPEC_ALL_DATATYPES)
