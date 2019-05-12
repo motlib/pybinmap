@@ -131,3 +131,21 @@ def test_dict_access_non_existent_element():
 
     with pytest.raises(KeyError):
         _ = binmap['non_existent_value']
+
+
+def test_binmap_iterator():
+    '''Test to iterate over the key,value tuples in binmap.'''
+
+    binmap = _get_default_binmap()
+
+    for name,val in binmap:
+        print(name, ':', val)
+        
+
+def test_binmap_item_iterator():
+    '''Iterate over the underlying DataItem instances.'''
+
+    binmap = _get_default_binmap()
+
+    for item in binmap.items():
+        print(item.name, ':', item.value)

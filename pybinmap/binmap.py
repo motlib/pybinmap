@@ -10,13 +10,16 @@ class BinMap():
     data.'''
 
     def __init__(self):
+        '''Initialize a BinMap instance.'''
+        
         # a list for maintaining sort order of the items
         self._map_list = []
         # a dict for name based access
         self._map_dict = {}
-
+        # interpreted data
         self._data = None
 
+        # type table for mapping names to DataItem classes and default arguments 
         self._type_tbl = {
             'raw': {'cls': DataItem},
             'uint': {'cls': UIntDataItem},
@@ -31,14 +34,24 @@ class BinMap():
             'bool8': {'cls': BoolDataItem, 'length': 8},
         }
 
+        # helper counter to fill unmapped regions
         self._unmapped_counter = 0
 
 
     def add(self, **kwargs):
-        '''Add a new data item definition to this binary map.'''
+        '''Add a new data item definition to this binary map.
 
+        :param dt: The data type which is looked up in the datatype table to
+          determine the class and default parameters for the DataItem instance to
+          created.
+        :param **kwargs: Keyword arguments, which are passed to the underlying
+          DataItem.
+
+        '''
+
+        # At least we need the data type. 
         if 'dt' not in kwargs:
-            raise ValueError("Must specify the data type with 'dt' parameter.")
+            raise ValueError("Data type must be specified with 'dt' parameter.")
 
         spec = self._type_tbl[kwargs['dt']]
 
@@ -159,3 +172,17 @@ class BinMap():
         contained data items.'''
 
         return '\n'.join(str(bd) for bd in self._map_list)
+
+    
+    def __iter__(self):
+        '''Iterate over the (key, value) tuples.'''
+        
+        for item in self._map_list:
+            yield (item.name, item.value)
+
+            
+    def items(self):
+        '''Return an iterator to iterate over the underlying DataItem instances 
+        in this BinMap.'''
+        
+        return self._map_list.__iter__()
