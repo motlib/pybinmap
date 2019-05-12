@@ -11,7 +11,7 @@ class BinMap():
 
     def __init__(self):
         '''Initialize a BinMap instance.'''
-        
+
         # a list for maintaining sort order of the items
         self._map_list = []
         # a dict for name based access
@@ -19,7 +19,7 @@ class BinMap():
         # interpreted data
         self._data = None
 
-        # type table for mapping names to DataItem classes and default arguments 
+        # type table for mapping names to DataItem classes and default arguments
         self._type_tbl = {
             'raw': {'cls': DataItem},
             'uint': {'cls': UIntDataItem},
@@ -49,7 +49,7 @@ class BinMap():
 
         '''
 
-        # At least we need the data type. 
+        # At least we need the data type.
         if 'dt' not in kwargs:
             raise ValueError("Data type must be specified with 'dt' parameter.")
 
@@ -173,16 +173,16 @@ class BinMap():
 
         return '\n'.join(str(bd) for bd in self._map_list)
 
-    
+
     def __iter__(self):
         '''Iterate over the (key, value) tuples.'''
-        
+
         for item in self._map_list:
             yield (item.name, item.value)
 
-            
+
     def items(self):
-        '''Return an iterator to iterate over the underlying DataItem instances 
+        '''Return an iterator to iterate over the underlying DataItem instances
         in this BinMap.'''
-        
+
         return self._map_list.__iter__()

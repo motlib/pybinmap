@@ -138,9 +138,9 @@ def test_binmap_iterator():
 
     binmap = _get_default_binmap()
 
-    for name,val in binmap:
+    for name, val in binmap:
         print(name, ':', val)
-        
+
 
 def test_binmap_item_iterator():
     '''Iterate over the underlying DataItem instances.'''

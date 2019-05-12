@@ -153,7 +153,7 @@ class DataItem():
 
         return self._args
 
-    
+
     def __str__(self):
         '''Convert the data item to string.'''
 
