@@ -9,5 +9,6 @@ name = "pypi"
 pytest = "*"
 pylint = "*"
 twine = "*"
+wheel = "*"
 
 [requires]
