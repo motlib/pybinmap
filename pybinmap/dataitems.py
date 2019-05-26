@@ -1,6 +1,8 @@
 '''Implementation of DataItem class and subclasses to convert binary data to a
 meaningful representation.'''
 
+import struct
+
 def format_addr(addr):
     '''Format a bit address as byte / bit address string.'''
 
@@ -219,3 +221,29 @@ class BoolDataItem(UIntDataItem):
 
         # Convert the integer value to bool (0: False, everything else: True)
         return bool(val)
+
+
+class FloatDataItem(DataItem):
+    '''DataItem subclass for interpreting float and double values according to 
+    IEEE 754.'''
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        if kwargs['length'] not in (32, 64):
+            msg = ('The length parameter must be either 32 bits (for float '
+                   'values) or 64 bits (for double values). Other length are '
+                   'not supported.')
+            raise ValueError(msg)
+        
+        
+    def calc_value(self):
+        # feels a bit like cheating, but here the standard library struct
+        # package comes to the rescue...
+
+        fmt = 'f' if self.length == 32 else 'd'
+
+        (value,) = struct.unpack(fmt, self._raw_value)
+
+        return value
+

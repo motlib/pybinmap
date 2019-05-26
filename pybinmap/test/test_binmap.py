@@ -59,6 +59,9 @@ TESTSPEC_ALL_DATATYPES = [
     pytest.param({'dt':'bool', 'start':0, 'length':1}, False, id='bool'),
     pytest.param({'dt':'bool1', 'start':1}, True, id='bool1'),
     pytest.param({'dt':'bool8', 'start':0}, True, id='bool8'),
+    # TODO: just check funtionality, did not yet check if the values are correct...
+    pytest.param({'dt':'float', 'start':0}, 1.7378244361449504e+34, id='float'),
+    pytest.param({'dt':'double', 'start':0}, 1.3987236292511692e-76, id='double'),
 ]
 
 @pytest.mark.parametrize('params,result', TESTSPEC_ALL_DATATYPES)

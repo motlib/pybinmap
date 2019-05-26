@@ -3,7 +3,8 @@ fields.'''
 
 from collections import OrderedDict
 
-from .dataitems import DataItem, UIntDataItem, CharDataItem, BoolDataItem
+from .dataitems import DataItem, UIntDataItem, CharDataItem, BoolDataItem, \
+    FloatDataItem
 
 class BinMap():
     '''The BinMap organized a set of data items to interpret unstructured binary
@@ -32,6 +33,8 @@ class BinMap():
             'bool': {'cls': BoolDataItem},
             'bool1': {'cls': BoolDataItem, 'length': 1},
             'bool8': {'cls': BoolDataItem, 'length': 8},
+            'float': {'cls': FloatDataItem, 'length': 32},
+            'double': {'cls': FloatDataItem, 'length': 64},
         }
 
         # helper counter to fill unmapped regions
