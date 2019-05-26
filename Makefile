@@ -7,7 +7,7 @@ dist:
 	pipenv run python setup.py sdist
 	pipenv run python setup.py bdist_wheel
 
-.PHONY: dist
+.PHONY: clean
 clean:
 	rm -rf build dist pybinmap.egg-info
 
