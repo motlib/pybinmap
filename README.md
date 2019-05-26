@@ -22,9 +22,11 @@ And you know, that there is
 * an 4 bit unsigned int called `testval` in the second byte
 * an two-character ascii string called `answer` in bytes 4 and 5
 
-Then you can do the following:
+Then you can do the following with `pybinmap`:
 
 ```python
+from pybinmap import BinMap
+
 bm = BinMap()
 bm.add(dt='bool', name='enabled', start=2, length=1)
 bm.add(dt='uint', name='testval', start=8, length=4)
@@ -55,6 +57,7 @@ answer = bm['answer']
 # or get the whole dictionary of values
 idata = bm.get_dict()
 ```
+
 
 ## Development
 
